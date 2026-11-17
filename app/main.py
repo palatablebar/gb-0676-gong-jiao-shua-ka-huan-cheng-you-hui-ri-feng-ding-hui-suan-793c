@@ -46,7 +46,7 @@ def create_app():
         run=store.get(run_id)
         return application.response_class(build_archive(run),mimetype="text/csv",headers={"Content-Disposition":'attachment; filename="evidence.csv"'})
     for index,(slug,title) in enumerate(MODULES,1):
-        module=importlib.import_module(f"app.modules.m{index}_{slug}.handler")
+        module=importlib.import_module(f"app.modules.m{index}_{slug}.handler" if index<=7 else f"app.modules.m8_recon.handler")
         application.register_blueprint(module.bp)
     register_pages(application)
     return application

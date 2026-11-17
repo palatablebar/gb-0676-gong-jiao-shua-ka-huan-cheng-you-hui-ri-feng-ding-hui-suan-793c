@@ -13,6 +13,7 @@
 | M5 优惠回算 | 查看并运行优惠回算 | `/api/discounts` | `app/modules/m5_discounts/rules.py` | `tests/test_m5.py` |
 | M6 清分对账 | 查看并运行清分对账 | `/api/clearing` | `app/modules/m6_clearing/rules.py` | `tests/test_m6.py` |
 | M7 日结归档 | 查看并运行日结归档 | `/api/settlement` | `app/modules/m7_settlement/rules.py` | `tests/test_m7.py` |
+| M8 换卡并账 | 候选挂账、补证并账、幂等重试 | `/api/recon` | `app/modules/m8_recon/rules.py`、`service.py` | `tests/test_m8.py` |
 
 ## 陷阱登记
 
@@ -31,6 +32,10 @@
 | TRAP-11 | 混合偏移 | 落错版本 | UTC归整 | `app/values.py` | `tests/test_m3.py::test_timezone_equal` |
 | TRAP-23 | 换乘截止点 | 重复优惠 | 截止点排除 | `app/modules/m5_discounts/rules.py` | `tests/test_m5.py::test_exact_window_excluded` |
 | TRAP-25 | 票价重叠 | 随意取版 | 冲突隔离 | `app/modules/m3_fares/rules.py` | `tests/test_m3.py::test_overlap_rejected` |
+| TRAP-30 | 换卡凭证迟到 | 凭证不到不并账或先并账后冲正 | 候选预占挂账、补证转正 | `app/modules/m8_recon/service.py` | `tests/test_m8.py::test_candidate_link_detected_and_held_not_merged` |
+| TRAP-31 | 两卡重复占额 | 并账后两额度都在用 | 释放分卡预占、登记一笔同人额度 | `app/modules/m8_recon/service.py` | `tests/test_m8.py::test_single_shared_cap_not_double_occupied` |
+| TRAP-32 | 补证重试重复减免 | 重试再退一次差 | command_id 幂等返回同版本 | `app/modules/m8_recon/service.py` | `tests/test_m8.py::test_retry_same_command_is_idempotent` |
+| TRAP-33 | 并账覆盖原始刷卡 | 原始记录被改写 | 原始行程只读、结果另存版本快照 | `app/modules/m8_recon/service.py` | `tests/test_m8.py::test_raw_tap_records_remain_traceable` |
 
 ## 对账规则
 
